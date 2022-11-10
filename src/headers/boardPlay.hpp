@@ -1,7 +1,0 @@
-
-
-struct gameBoard {
-    bool win;
-
-};
-
