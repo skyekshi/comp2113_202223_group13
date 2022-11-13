@@ -2,9 +2,10 @@
 #include<ctime>
 #include<string>
 #include<tuple>
-#incude<vector>
+#include<vector>
 #include<cstdlib>
 #include<cmath>
+#include boardFunction.h
 using namespace std;
 
 srand(time(0))
