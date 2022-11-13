@@ -42,4 +42,6 @@ void blockTile(gameBoard &gb);
 void hasWon(gameBoard &gb);
 void hasLost(gameBoard &gb);
 
+void extension(gameBoard &gb);
+
 #endif
