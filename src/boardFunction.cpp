@@ -1,146 +1,294 @@
 #include <random>
 #include <vector>
-#include "boardFunction.hpp"
+#include <algorithm>
+//#include <bits/stdc++.h>
+#include "boardFunction.h"
+using namespace std;
 
-namespace Game {
-    namespace {
-        
+void updateBoard (gameBoard &gb) {
+    srand(time(0));
 
-        switch (toupper(c)) {
-            case CODE_WASD_UP:
-                intendedmove[FLAG_MOVE_UP] = true;
-                return false;
-            case CODE_WASD_LEFT:
-                intendedmove[FLAG_MOVE_LEFT] = true;
-                return false;
-            case CODE_WASD_DOWN:
-                intendedmove[FLAG_MOVE_DOWN] = true;
-                return false;
-            case CODE_WASD_RIGHT:
-                intendedmove[FLAG_MOVE_RIGHT] = true;
-                return false;
+    if (!gb.init) {
+        for (int i = 0; i < gb.boardSize[0]; i++) {
+            vector<Tile> boardArray;
+            for (int j = 0; j < gb.boardSize[1]; j++) {
+                Tile newTile;
+                boardArray.push_back(newTile);
+            }
+            gb.board.push_back(boardArray);
+        }
+        int i, j, num;
+        i = rand() % gb.boardSize[0];
+        j = rand() % gb.boardSize[1];
+        num = rand() % 100 > 75 ? 4 : 2;
+        gb.board[i][j].value = num;
+        addTile(gb);
+        gb.init = true;
+    } else {
+        addTile(gb);
+    }  
+}
 
-        enum gameFlag {
-            Flag_win,
-            Flag_maxNo
-        };
+void addTile (gameBoard &gb) {
 
-        using gameStatus = std::array<bool, Flag_maxNo>;
-        //what I mean by limiting move when it is already at the place
+    vector<vector<int>> freeTiles;
+    for (int i = 0; i < gb.boardSize[0]; i++) {
+        for (int j = 0; j < gb.boardSize[1]; j++) {
+            if (!gb.board[i][j].value) {
+                vector<int> empty{i,j};
+                freeTiles.push_back(empty);
+            }
+        }
+    }
 
-        
+    srand(time(0));
+    
+    if (freeTiles.size()) {
+        vector<int> freeTileRand = freeTiles[rand() % freeTiles.size()];
+        int i = freeTileRand[0];
+        int j = freeTileRand[1];
+        if (gb.moreTile) {
+            if (rand() % 100 > 50) {
+                gb.board[i][j].value = rand() % 100 > 75 ? 4 : 2;
+            } else {
+                gb.board[i][j].value = rand() % 100 > 75 ? 9 : 3;
+            }
+        } else {
+            gb.board[i][j].value = rand() % 100 > 75 ? 4 : 2;
+        }   
+    } 
+    
+}
 
-        bool movePossible () {
-            for (int i = 0; i < boardSize; i++) {
-                for (int j = 0; j < boardSize; j++) {
-                    if (!gameBoard[i][j].value) {
+bool canMove (gameBoard gb, Directions d) {
+
+    switch (d) {
+        case UP:
+            for (int j = 0; j < gb.boardSize[1]; j++) {
+                for (int i = 0; i < gb.boardSize[0]; i++) {
+                    if (!gb.board[i][j].value && gb.board[i + 1][j].value) {
                         return true;
                     }
                 }
             }
-
-
-        }
-
-        gameBoard toMove (char c, gameBoard gbd) {
-            switch (toupper(c)) {
-                case WASD_UP:
-                    moveTileUp(gbd);
-                    break;
-                case WASD_DOWN:
-                    moveTileDown(gbd);
-                    break;
-                case WASD_LEFT:
-                    moveTileLeft(gbd);
-                    break;
-                case WASD_RIGHT:
-                    moveTileRight(gbd);
-                    break;
-            }
-            return gbd;
-        }
-
-        void moveHorizontal(Directions d, int i, int j) {
-
-        }
-
-        //task 1 for handling both + and -
-        void handleCollision(int i, int j) {
-
-        }
-
-        //task 2 for supermerging
-        void mergeTiles() {
-            
-        }
-
-        //task 4 for bonus & punishment; should also take care of the user interface
-        bool updateGameBoardStat() {
-
-        }
-
-
-
-        bool checkWin() {
-
-        }
-
-        bool checkFull() {
-            
-        }
-
-
-        //mainly tile management; for task 6
-        struct gameboardData {
-            
-        };
-        
-
-        int RandInt(int max) {
-            std::random_device rd;     // Only used once to initialise (seed) engine
-            std::mt19937 rng(rd());    // Random-number engine used (Mersenne-Twister in this case)
-            std::uniform_int_distribution<int> uni(0,max); // Guaranteed unbiased
-
-            auto random_integer = uni(rng);
-            return random_integer;
-        }
-
-        bool Tile3nSwitch() {
-
-        }
-
-        void setTileValue(gameBoard &gbd, gameboardPoint pt, ull value) {
-            gameboardData{}(gbd, pt).value = value;
-        }
-        
-
-        bool addTile(gameBoard &gbd) {
-
-            const auto indexList = getFreeTiles(gbd);
-
-            if (!indexList.size()) {
-                return true;
-            }
-
-            const int playsize = getPlaySize(gbd);
-            const int randomIndex = indexList.at(RandInt(1000) % indexList.size());
-
-            const auto randomIndex_toPoint = gameboardPoint{randomIndex % playsize, randomIndex / playsize};
-            
-            if (Tile3nSwitch()) {
-                const auto a = RandInt(100);
-                if (a >= 50) {
-                    const auto RandValue = a >= 90 ? 9 : 3;
-                } else {
-                    const auto RandValue = a <= 15 ? 2 : 4;
+            break;
+        case DOWN:
+            for (int j = 0; j < gb.boardSize[1]; j++) {
+                for (int i = 0; i < gb.boardSize[0]; i++) {
+                    if (gb.board[i][j].value && !gb.board[i + 1][j].value) {
+                        return true;
+                    }
                 }
-            } else {
-                const auto RandValue = RandInt(100) > 75 ? 4 : 2;
             }
-
-            setTileValue(gbd, randomIndex_toPoint, RandValue);
-
+            break;
+        case LEFT:
+            for (int i = 0; i < gb.boardSize[0]; i++) {
+                for (int j = 0; j < gb.boardSize[1]; j++) {
+                    if (!gb.board[i][j].value && gb.board[i][j + 1].value) {
+                        return true;
+                    }
+                }
+            }
+            break;
+        case RIGHT:
+            for (int i = 0; i < gb.boardSize[0]; i++) {
+                for (int j = 0; j < gb.boardSize[1]; j++) {
+                    if (gb.board[i][j].value && !gb.board[i][j + 1].value) {
+                        return true;
+                    }
+                }
+            }
+            break;
+        default:
             return false;
-        } 
+            break;
+    }
+
+    return false;
+}
+
+void moveTile (gameBoard &gb, Directions d) {
+
+    vector<int> vectorToMergeUp, vectorToMergeDown, vectorToMergeLeft, vectorToMergeRight;
+
+    switch (d) {
+        case UP:
+            for (int i = 0; i < gb.boardSize[0]; i++) {
+                for (int j = 0; j < gb.boardSize[1]; j++) {
+                    if (!gb.board[i][j].blocked) {
+                        vectorToMergeUp.push_back(gb.board[i][j].value);
+                    } else {
+                        break;
+                    }
+                }
+                reverse(vectorToMergeUp.begin(), vectorToMergeUp.end());
+                mergeTile(gb, vectorToMergeUp);
+                reverse(vectorToMergeUp.begin(), vectorToMergeUp.end());
+                for (int j = 0; j < gb.boardSize[1]; j++) {
+                    if (!gb.board[i][j].blocked) {
+                        gb.board[i][j].value = vectorToMergeUp[j];
+                    } else {
+                        break;
+                    }  
+                }
+            }
+            break;
+
+        case DOWN:
+            for (int i = 0; i < gb.boardSize[0]; i++) {
+                for (int j = gb.boardSize[1] - 1; j >= 0 ; j--) {
+                    if (!gb.board[i][j].blocked) {
+                        vectorToMergeDown.push_back(gb.board[i][j].value);
+                    } else {
+                        break;
+                    }
+                }
+                reverse(vectorToMergeDown.begin(), vectorToMergeDown.end());
+                mergeTile(gb, vectorToMergeDown);
+                reverse(vectorToMergeDown.begin(), vectorToMergeDown.end());
+                for (int j = gb.boardSize[1] - 1; j >= 0 ; j--) {
+                    if (!gb.board[i][j].blocked) {
+                        gb.board[i][j].value = vectorToMergeDown[j];
+                    } else {
+                        break;
+                    }  
+                }
+            }
+            break;
+
+        case LEFT:
+            for (int j = 0; j < gb.boardSize[1]; j++) {
+                for (int i = 0; i < gb.boardSize[0]; i++) {
+                    if (!gb.board[i][j].blocked) {
+                        vectorToMergeLeft.push_back(gb.board[i][j].value);
+                    } else {
+                        break;
+                    }
+                }
+                reverse(vectorToMergeLeft.begin(), vectorToMergeLeft.end());
+                mergeTile(gb, vectorToMergeLeft);
+                reverse(vectorToMergeLeft.begin(), vectorToMergeLeft.end());
+                for (int i = 0; i < gb.boardSize[0]; i++) {
+                    if (!gb.board[i][j].blocked) {
+                        gb.board[i][j].value = vectorToMergeLeft[i];
+                    } else {
+                        break;
+                    } 
+                }
+            }
+            break;
+
+        case RIGHT:
+            for (int j = 0; j < gb.boardSize[1]; j++) {
+                for (int i = gb.boardSize[0] - 1; i >= 0 ; i--) {
+                    if (!gb.board[i][j].blocked) {
+                        vectorToMergeRight.push_back(gb.board[i][j].value);
+                    } else {
+                        break;
+                    }
+                }
+                reverse(vectorToMergeRight.begin(), vectorToMergeRight.end());
+                mergeTile(gb, vectorToMergeRight);
+                reverse(vectorToMergeRight.begin(), vectorToMergeRight.end());
+                for (int i = gb.boardSize[0] - 1; i >= 0 ; i--) {
+                    if (!gb.board[i][j].blocked) {
+                        gb.board[i][j].value = vectorToMergeRight[i];
+                    } else {
+                        break;
+                    }
+                }
+            }
+            break;
+        default:
+            break;
     }
 }
+
+void mergeTile (gameBoard &gb, std::vector<int> &vectorToMerge) {
+
+    const int size = vectorToMerge.size();
+    vectorToMerge.erase(remove(vectorToMerge.begin(), vectorToMerge.end(), 0), vectorToMerge.end());
+    vectorToMerge.shrink_to_fit();
+
+    bool merged = false;
+
+    for (int i = vectorToMerge.size() - 1; i > 0; i--) {
+        if (merged) {
+            merged = false;
+            if (!gb.superMove) {
+                continue;
+            }
+        } else if (vectorToMerge[i] == vectorToMerge[i - 1]) {
+            vectorToMerge[i] *= 2;
+            gb.score += vectorToMerge[i - 1];
+            gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+            vectorToMerge[i - 1] = 0;
+            merged = true;
+        }
+    }
+
+    vectorToMerge.erase(remove(vectorToMerge.begin(), vectorToMerge.end(), 0), vectorToMerge.end());
+    vectorToMerge.shrink_to_fit();
+
+    const int sizeafter = vectorToMerge.size();
+    for (int i = 0; i < size - sizeafter; i++) {
+        vectorToMerge.insert(vectorToMerge.begin(), 0);
+    }
+}
+
+void blockTile(gameBoard &gb) {
+    vector<vector<int>> usedTiles;
+    for (int i = 0; i < gb.boardSize[0]; i++) {
+        for (int j = 0; j < gb.boardSize[1]; j++) {
+            if (gb.board[i][j].value) {
+                vector<int> empty{i,j};
+                usedTiles.push_back(empty);
+            }
+        }
+    }
+
+    srand(time(0));
+    
+    if (usedTiles.size()) {
+        vector<int> usedTileRand = usedTiles[rand() % usedTiles.size()];
+        int i = usedTileRand[0];
+        int j = usedTileRand[1];
+        gb.board[i][j].blocked = true;
+    } 
+
+}
+
+void hasWon (gameBoard &gb) {
+    if (gb.largestTile == gb.tar) {
+        gb.won = true;
+    }
+}
+
+void hasLost (gameBoard &gb) {
+    for (int i = 0; i < gb.boardSize[0]; i++) {
+        for (int j = 0; j < gb.boardSize[1]; j++) {
+            if (!gb.board[i][j].value) {
+                gb.lost = false;
+            }
+        }
+    }
+
+    for (int i = 0; i < gb.boardSize[0]; i++) {
+        for (int j = 0; j < gb.boardSize[1] - 1; j++) {
+            if (gb.board[i][j].value == gb.board[i][j + 1].value) {
+                gb.lost = false;
+            }
+        }
+    }
+
+    for (int i = 0; i < gb.boardSize[0] - 1; i++) {
+        for (int j = 0; j < gb.boardSize[1]; j++) {
+            if (gb.board[i][j].value == gb.board[i + 1][j].value) {
+                gb.lost = false;
+            }
+        }
+    }
+    gb.lost = true;
+}
+
+
