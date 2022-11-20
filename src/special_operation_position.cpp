@@ -24,7 +24,8 @@ void special_operation_position(gameBoard &gb)
 			int j = rand() % gb.boardsize[1];
 			//only generate -2 in the board(can be harder)
 			if (gb.board[i][j] == 2){
-				gb.board[i][j] = -1 * gb.board[i][j];}	
+				gb.board[i][j] = -1 * gb.board[i][j];}
+			num ++;
 		}
 	}
 
