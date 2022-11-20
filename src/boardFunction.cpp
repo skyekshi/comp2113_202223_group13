@@ -291,4 +291,52 @@ void hasLost (gameBoard &gb) {
     gb.lost = true;
 }
 
-
+void bonus(gameBoard& gb) {
+	srand(time());
+	bool flag = rand() % 2;
+	int row = rand() % gb.boardSize[0], cal = rand() % gb.boardSize[1];
+	int a[4]{ 1,0,-1,0 }, b[4]{ 0,1,0,-1 };
+	if (flag) {
+		while (gb.board[row][cal] == 0)
+		{
+			row = rand() % gb.boardSize[0];
+			cal = rand() % gb.boardSize[1];
+		}
+		gb.board[row][cal].value = 0;
+	}
+	else {
+		while (true) {
+			while (gb.board[row][cal] == 0)
+			{
+				row = rand() % gb.boardSize[0];
+				cal = rand() % gb.boardSize[1];
+			}
+			for (int i = 0; i < 4; i++)
+			{
+				int x = row + a[4], y = cal + b[4];
+				if (x > 0 && x < gb.boardSize[0] && y>0 && y < gb.boardSize[1] && gb.board[x][y] == 0)
+				{
+					gb.board[x][u] = gb.board[row][cal];
+					return;
+				}
+			}
+		}
+	}
+}
+void punishment(gameBoard& gb) {
+	srand(time());
+	bool flag = rand() % 2;
+	if (flag) {
+		int row = rand() % gb.boardSize[0], cal = rand() % gb.boardSize[1];
+		while (gb.board[row][cal] == 0)
+		{
+			row = rand() % gb.boardSize[0];
+			cal = rand() % gb.boardSize[1];
+		}
+		gb.board[row][cal].value *=4;
+	}
+	else {
+		for (int i = 0; i < 2; i++)
+			addTile(gb);
+	}
+}
