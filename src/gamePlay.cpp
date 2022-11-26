@@ -11,6 +11,7 @@
 #include "scoreStorage.h"
 using namespace std;
 
+//getch linux equivalent
 static struct termios old, current;
 
 /* Initialize new terminal i/o settings */
@@ -69,14 +70,27 @@ int main () {
                 gb.superMove = false;
                 gb.moreTile = false;
                 gb.init = false;
-                gb.boardSize = {4,4};
+                gb.boardSize[0] = 4;
+                gb.boardSize[1] = 4;
+                //updateBoard(gb);
                 for (int i = 0; i < gb.boardSize[0]; i++) {
+                    vector<Tile> boardArray;
                     for (int j = 0; j < gb.boardSize[1]; j++) {
-                        gb.board[i][j].value = 0;
-                        gb.board[i][j].blocked = false;
+                        Tile *newtile = new Tile;
+                        newtile->value = 0;
+                        newtile->blocked = false;
+                        boardArray.push_back(*newtile);
                     }
+                    gb.board.push_back(boardArray);
                 }
-                updateBoard(gb);
+
+                int i, j, num;
+                i = rand() % gb.boardSize[0];
+                j = rand() % gb.boardSize[1];
+                num = rand() % 100 > 75 ? 4 : 2;
+                gb.board[i][j].value = num;
+                addTile(gb);
+                
                 printGamePage(gb, highScore);
                 gb.won = false;
                 gb.woncheck = false;
@@ -93,24 +107,29 @@ int main () {
                 break;
             } else if (userInput == 'm') {
                 gb.superMove = true;
+                printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 't') {
                 gb.moreTile = true;
+                printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
-            } else if (userInput == 'b') {
+            } /*else if (userInput == 'b') {
                 blockTile(gb);
+                printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
-            } else if (userInput == 'u') {
+            }*/ else if (userInput == 'u') {
                 printMessage("Input your desired target value:");
                 int target;
                 cin >> target;
                 gb.tar = target;
+                printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 'z') {
-                printMessage("Input your desired board size (row, col):");
+                printMessage("Input your desired board size (row, col, 4-6):");
                 int row, col;
                 cin >> row >> col;
                 gb.boardSize = {row, col};
+                printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 'w' || userInput == 'a' || userInput == 's' || userInput == 'd') {
                 gb.init = true;
@@ -147,7 +166,7 @@ int main () {
                     printMessage("You've won! You can either (Q)uit game or start (N)ew game. Otherwise, press wasd to continue.");
                     nextInput = {'q', 'n', 'w', 'a', 's', 'd'};
                 } else {
-                    updateBoard(gb);
+                    addTile(gb);
                     printGamePage(gb, highScore);
                     nextInput = {'q', 'w', 'a', 's', 'd'};
                 }

@@ -5,18 +5,20 @@
 #include "boardFunction.h"
 using namespace std;
 
-void updateBoard (gameBoard &gb) {
+/*void updateBoard (gameBoard &gb) {
     srand(time(0));
 
     if (!gb.init) {
         for (int i = 0; i < gb.boardSize[0]; i++) {
-            vector<Tile> boardArray;
-            for (int j = 0; j < gb.boardSize[1]; j++) {
-                Tile newTile;
-                boardArray.push_back(newTile);
-            }
-            gb.board.push_back(boardArray);
-        }
+                    vector<Tile> boardArray;
+                    for (int j = 0; j < gb.boardSize[1]; j++) {
+                        Tile *newtile = new Tile;
+                        newtile->value = 0;
+                        newtile->blocked = false;
+                        boardArray.push_back(*newtile);
+                    }
+                    gb.board.push_back(boardArray);
+                }
         int i, j, num;
         i = rand() % gb.boardSize[0];
         j = rand() % gb.boardSize[1];
@@ -27,7 +29,7 @@ void updateBoard (gameBoard &gb) {
     } else {
         addTile(gb);
     }  
-}
+}*/
 
 void addTile (gameBoard &gb) {
 
@@ -113,8 +115,8 @@ void moveTile (gameBoard &gb, Directions d) {
 
     switch (d) {
         case UP:
-            for (int i = 0; i < gb.boardSize[0]; i++) {
-                for (int j = 0; j < gb.boardSize[1]; j++) {
+            for (int j = 0; j < gb.boardSize[1]; j++) {
+                for (int i = 0; i < gb.boardSize[0]; i++) {
                     if (!gb.board[i][j].blocked) {
                         vectorToMergeUp.push_back(gb.board[i][j].value);
                     } else {
@@ -124,19 +126,20 @@ void moveTile (gameBoard &gb, Directions d) {
                 reverse(vectorToMergeUp.begin(), vectorToMergeUp.end());
                 mergeTile(gb, vectorToMergeUp);
                 reverse(vectorToMergeUp.begin(), vectorToMergeUp.end());
-                for (int j = 0; j < gb.boardSize[1]; j++) {
+                for (int i = 0; i < gb.boardSize[0]; i++) {
                     if (!gb.board[i][j].blocked) {
                         gb.board[i][j].value = vectorToMergeUp[j];
                     } else {
                         break;
                     }  
                 }
+                vectorToMergeUp.clear();
             }
             break;
 
         case DOWN:
-            for (int i = 0; i < gb.boardSize[0]; i++) {
-                for (int j = gb.boardSize[1] - 1; j >= 0 ; j--) {
+            for (int j = 0; j < gb.boardSize[1]; j++) {
+                for (int i = gb.boardSize[0] - 1; i >= 0 ; i--) {
                     if (!gb.board[i][j].blocked) {
                         vectorToMergeDown.push_back(gb.board[i][j].value);
                     } else {
@@ -146,19 +149,20 @@ void moveTile (gameBoard &gb, Directions d) {
                 reverse(vectorToMergeDown.begin(), vectorToMergeDown.end());
                 mergeTile(gb, vectorToMergeDown);
                 reverse(vectorToMergeDown.begin(), vectorToMergeDown.end());
-                for (int j = gb.boardSize[1] - 1; j >= 0 ; j--) {
+                for (int i = gb.boardSize[0] - 1; i >= 0 ; i--) {
                     if (!gb.board[i][j].blocked) {
                         gb.board[i][j].value = vectorToMergeDown[j];
                     } else {
                         break;
                     }  
                 }
+                vectorToMergeDown.clear();
             }
             break;
 
         case LEFT:
-            for (int j = 0; j < gb.boardSize[1]; j++) {
-                for (int i = 0; i < gb.boardSize[0]; i++) {
+            for (int i = 0; i < gb.boardSize[0]; i++) {
+                for (int j = 0; j < gb.boardSize[1]; j++) {
                     if (!gb.board[i][j].blocked) {
                         vectorToMergeLeft.push_back(gb.board[i][j].value);
                     } else {
@@ -168,19 +172,20 @@ void moveTile (gameBoard &gb, Directions d) {
                 reverse(vectorToMergeLeft.begin(), vectorToMergeLeft.end());
                 mergeTile(gb, vectorToMergeLeft);
                 reverse(vectorToMergeLeft.begin(), vectorToMergeLeft.end());
-                for (int i = 0; i < gb.boardSize[0]; i++) {
+                for (int j = 0; j < gb.boardSize[1]; j++) {
                     if (!gb.board[i][j].blocked) {
                         gb.board[i][j].value = vectorToMergeLeft[i];
                     } else {
                         break;
                     } 
                 }
+                vectorToMergeLeft.clear();
             }
             break;
 
         case RIGHT:
-            for (int j = 0; j < gb.boardSize[1]; j++) {
-                for (int i = gb.boardSize[0] - 1; i >= 0 ; i--) {
+            for (int i = 0; i < gb.boardSize[0]; i++) {
+                for (int j = gb.boardSize[1] - 1; j >= 0 ; j--) {
                     if (!gb.board[i][j].blocked) {
                         vectorToMergeRight.push_back(gb.board[i][j].value);
                     } else {
@@ -190,13 +195,14 @@ void moveTile (gameBoard &gb, Directions d) {
                 reverse(vectorToMergeRight.begin(), vectorToMergeRight.end());
                 mergeTile(gb, vectorToMergeRight);
                 reverse(vectorToMergeRight.begin(), vectorToMergeRight.end());
-                for (int i = gb.boardSize[0] - 1; i >= 0 ; i--) {
+                for (int j = gb.boardSize[1] - 1; j >= 0 ; j--) {
                     if (!gb.board[i][j].blocked) {
                         gb.board[i][j].value = vectorToMergeRight[i];
                     } else {
                         break;
                     }
                 }
+                vectorToMergeDown.clear();
             }
             break;
         default:

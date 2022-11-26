@@ -10,6 +10,7 @@ void printLeftPadding(int);
 void printUpPadding(int);
 void printMenu();
 void printMessage(string);
+void printMenuAfter();
 void printGamePage(gameBoard, int);
 
 #endif

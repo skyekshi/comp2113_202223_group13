@@ -10,7 +10,7 @@
 
 class Tile {
     public:
-        long value;
+        int value;
         bool blocked;
         Tile(): value(0), blocked(false) {}  
 };
@@ -29,12 +29,12 @@ class gameBoard {
         bool woncheck;
         bool lost;
         std::vector<int> boardSize;
-        std::vector<std::vector<Tile>> board;
+        std::vector<std::vector<Tile> > board;
         gameBoard(): score(0), largestTile(2), tar(2048), superMove(false), moreTile(false), init(false), boardSize({4,4}), board({}), won(false), woncheck(false), lost(false) {}
 };
 
 void addTile(gameBoard &gb);
-void updateBoard(gameBoard &gb);
+//void updateBoard(gameBoard &gb);
 bool canMove(gameBoard gb, Directions d);
 void moveTile(gameBoard &gb, Directions d);
 void mergeTile(gameBoard &gb, std::vector<int> &vectorToMerge);
