@@ -1,11 +1,53 @@
+#include <stdio.h>
+#include <iostream>
+#include <algorithm>
+#include <iomanip>
+#include <cstdlib>
+#include <vector>
+#include <termios.h>
+#include <stdio.h>
 #include "boardFunction.h"
 #include "userInterface.h"
 #include "scoreStorage.h"
-#include <stdio.h>
-#include <curses.h>
-#include <iostream>
 using namespace std;
 
+static struct termios old, current;
+
+/* Initialize new terminal i/o settings */
+void initTermios(int echo) 
+{
+  tcgetattr(0, &old); /* grab old terminal i/o settings */
+  current = old; /* make new settings same as old settings */
+  current.c_lflag &= ~ICANON; /* disable buffered i/o */
+  if (echo) {
+      current.c_lflag |= ECHO; /* set echo mode */
+  } else {
+      current.c_lflag &= ~ECHO; /* set no echo mode */
+  }
+  tcsetattr(0, TCSANOW, &current); /* use these new terminal i/o settings now */
+}
+
+/* Restore old terminal i/o settings */
+void resetTermios(void) 
+{
+  tcsetattr(0, TCSANOW, &old);
+}
+
+/* Read 1 character - echo defines echo mode */
+char getch_(int echo) 
+{
+  char ch;
+  initTermios(echo);
+  ch = getchar();
+  resetTermios();
+  return ch;
+}
+
+/* Read 1 character without echo */
+char getch(void) 
+{
+  return getch_(0);
+}
 
 int main () {
     printMenu();
@@ -14,7 +56,6 @@ int main () {
 
     char userInput;
     vector<char> nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
-    initscr();
 
     while (true) {
         userInput = getch();
@@ -37,6 +78,9 @@ int main () {
                 }
                 updateBoard(gb);
                 printGamePage(gb, highScore);
+                gb.won = false;
+                gb.woncheck = false;
+                gb.lost = false;
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'r') {
                 retrieveGame(gb);

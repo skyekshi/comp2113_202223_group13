@@ -10,12 +10,12 @@ boardFunction.o: boardFunction.cpp boardFunction.h
 	g++ $(FLAGS) -c $<
 
 gamePlay.o: gamePlay.cpp userInterface.h scoreStorage.h boardFunction.h
-	g++ $(FLAGS) -lncurses -c $<
+	g++ $(FLAGS) -c $<
 
 2048: gamePlay.o userInterface.o scoreStorage.o boardFunction.o
-	g++ $(FLAGS) -lncurses $^ -o $@
+	g++ $(FLAGS) $^ -o $@
 
 clean:
-	rm -f userInterface.o scoreStorage.o boardFunction.o 2048.o 2048
+	rm -f gamePlay.o userInterface.o scoreStorage.o boardFunction.o 2048.o 2048
 
 .PHONY: clean
