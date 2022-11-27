@@ -63,7 +63,6 @@ int main () {
         tolower(userInput);
         if (count(nextInput.begin(), nextInput.end(), userInput)) {
             if (userInput == 'n') {
-                saveScore(gb.score);
                 gb.score = 0;
                 gb.largestTile = 0;
                 gb.tar = 2048;
@@ -103,6 +102,7 @@ int main () {
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'q') {
                 saveScore(gb.score);
+                saveGame(gb);
                 printMessage("See you next time!");
                 break;
             } else if (userInput == 'm') {
@@ -137,21 +137,25 @@ int main () {
                     case 'w':
                         if (canMove(gb, UP)) {
                             moveTile(gb, UP);
+                            addTile(gb);
                         }
                         break;
                     case 's':
                         if (canMove(gb, DOWN)) {
                             moveTile(gb, DOWN);
+                            addTile(gb);
                         }
                         break;
                     case 'a':
                         if (canMove(gb, LEFT)) {
                             moveTile(gb, LEFT);
+                            addTile(gb);
                         }
                         break;
                     case 'd':
                         if (canMove(gb, RIGHT)) {
                             moveTile(gb, RIGHT);
+                            addTile(gb);
                         }
                         break;
                     default:
@@ -162,18 +166,17 @@ int main () {
                 if (gb.lost) {
                     printMessage("You've lost! You can either (Q)uit game or start (N)ew game.");
                     nextInput = {'q', 'n'};
-                } else if (gb.won && gb.woncheck) {
+                    saveScore(gb.score);
+                } else if (gb.won && !gb.woncheck) {
+                    gb.woncheck = true;
                     printMessage("You've won! You can either (Q)uit game or start (N)ew game. Otherwise, press wasd to continue.");
                     nextInput = {'q', 'n', 'w', 'a', 's', 'd'};
+                    saveScore(gb.score);
                 } else {
-                    addTile(gb);
                     printGamePage(gb, highScore);
                     nextInput = {'q', 'w', 'a', 's', 'd'};
                 }
 
-                if (gb.won && gb.woncheck) {
-                    gb.woncheck = false;
-                }
             }
         }
     }

@@ -67,39 +67,51 @@ bool canMove (gameBoard gb, Directions d) {
     switch (d) {
         case UP:
             for (int j = 0; j < gb.boardSize[1]; j++) {
-                for (int i = 0; i < gb.boardSize[0]; i++) {
-                    if (!gb.board[i][j].value && gb.board[i + 1][j].value) {
+                for (int i = 0; i < gb.boardSize[0] - 1; i++) {
+                    if (gb.board[i][j].value == 0 && gb.board[i + 1][j].value != 0) {
+                        return true;
+                    } else if (gb.board[i][j].value != 0 && gb.board[i][j].value == gb.board[i + 1][j].value) {
                         return true;
                     }
                 }
             }
+            return false;
             break;
         case DOWN:
             for (int j = 0; j < gb.boardSize[1]; j++) {
-                for (int i = 0; i < gb.boardSize[0]; i++) {
-                    if (gb.board[i][j].value && !gb.board[i + 1][j].value) {
+                for (int i = 0; i < gb.boardSize[0] - 1; i++) {
+                    if (gb.board[i][j].value != 0 && gb.board[i + 1][j].value == 0) {
+                        return true;
+                    } else if (gb.board[i][j].value != 0 && gb.board[i][j].value == gb.board[i + 1][j].value) {
                         return true;
                     }
                 }
             }
+            return false;
             break;
         case LEFT:
             for (int i = 0; i < gb.boardSize[0]; i++) {
-                for (int j = 0; j < gb.boardSize[1]; j++) {
-                    if (!gb.board[i][j].value && gb.board[i][j + 1].value) {
+                for (int j = 0; j < gb.boardSize[1] - 1; j++) {
+                    if (gb.board[i][j].value == 0 && gb.board[i][j + 1].value != 0) {
+                        return true;
+                    } else if (gb.board[i][j].value != 0 && gb.board[i][j].value == gb.board[i][j + 1].value) {
                         return true;
                     }
                 }
             }
+            return false;
             break;
         case RIGHT:
             for (int i = 0; i < gb.boardSize[0]; i++) {
-                for (int j = 0; j < gb.boardSize[1]; j++) {
-                    if (gb.board[i][j].value && !gb.board[i][j + 1].value) {
+                for (int j = 0; j < gb.boardSize[1] - 1; j++) {
+                    if (gb.board[i][j].value != 0 && gb.board[i][j + 1].value == 0) {
+                        return true;
+                    } else if (gb.board[i][j].value != 0 && gb.board[i][j].value == gb.board[i][j + 1].value) {
                         return true;
                     }
                 }
             }
+            return false;
             break;
         default:
             return false;
@@ -128,7 +140,7 @@ void moveTile (gameBoard &gb, Directions d) {
                 reverse(vectorToMergeUp.begin(), vectorToMergeUp.end());
                 for (int i = 0; i < gb.boardSize[0]; i++) {
                     if (!gb.board[i][j].blocked) {
-                        gb.board[i][j].value = vectorToMergeUp[j];
+                        gb.board[i][j].value = vectorToMergeUp[i];
                     } else {
                         break;
                     }  
@@ -148,10 +160,10 @@ void moveTile (gameBoard &gb, Directions d) {
                 }
                 reverse(vectorToMergeDown.begin(), vectorToMergeDown.end());
                 mergeTile(gb, vectorToMergeDown);
-                reverse(vectorToMergeDown.begin(), vectorToMergeDown.end());
+               // reverse(vectorToMergeDown.begin(), vectorToMergeDown.end());
                 for (int i = gb.boardSize[0] - 1; i >= 0 ; i--) {
                     if (!gb.board[i][j].blocked) {
-                        gb.board[i][j].value = vectorToMergeDown[j];
+                        gb.board[i][j].value = vectorToMergeDown[i];
                     } else {
                         break;
                     }  
@@ -174,7 +186,7 @@ void moveTile (gameBoard &gb, Directions d) {
                 reverse(vectorToMergeLeft.begin(), vectorToMergeLeft.end());
                 for (int j = 0; j < gb.boardSize[1]; j++) {
                     if (!gb.board[i][j].blocked) {
-                        gb.board[i][j].value = vectorToMergeLeft[i];
+                        gb.board[i][j].value = vectorToMergeLeft[j];
                     } else {
                         break;
                     } 
@@ -194,15 +206,15 @@ void moveTile (gameBoard &gb, Directions d) {
                 }
                 reverse(vectorToMergeRight.begin(), vectorToMergeRight.end());
                 mergeTile(gb, vectorToMergeRight);
-                reverse(vectorToMergeRight.begin(), vectorToMergeRight.end());
+               // reverse(vectorToMergeRight.begin(), vectorToMergeRight.end());
                 for (int j = gb.boardSize[1] - 1; j >= 0 ; j--) {
                     if (!gb.board[i][j].blocked) {
-                        gb.board[i][j].value = vectorToMergeRight[i];
+                        gb.board[i][j].value = vectorToMergeRight[j];
                     } else {
                         break;
                     }
                 }
-                vectorToMergeDown.clear();
+                vectorToMergeRight.clear();
             }
             break;
         default:
@@ -275,6 +287,7 @@ void hasLost (gameBoard &gb) {
         for (int j = 0; j < gb.boardSize[1]; j++) {
             if (!gb.board[i][j].value) {
                 gb.lost = false;
+                return;
             }
         }
     }
@@ -283,6 +296,7 @@ void hasLost (gameBoard &gb) {
         for (int j = 0; j < gb.boardSize[1] - 1; j++) {
             if (gb.board[i][j].value == gb.board[i][j + 1].value) {
                 gb.lost = false;
+                return;
             }
         }
     }
@@ -291,6 +305,7 @@ void hasLost (gameBoard &gb) {
         for (int j = 0; j < gb.boardSize[1]; j++) {
             if (gb.board[i][j].value == gb.board[i + 1][j].value) {
                 gb.lost = false;
+                return;
             }
         }
     }

@@ -37,16 +37,16 @@ void saveGame (gameBoard gb) {
     ofstream file;
     file.open("boarddata.txt");
 
-    file << gb.boardSize[0] << endl << gb.boardSize[1] << endl;
+    file << gb.boardSize[0] << "\t" << gb.boardSize[1] << "\t";
 
     if (file.fail()) {
         cout << "Error in accessing historical gameboard status." << endl;
         exit(1);
     } else {
-        for (const auto &e : gb.board) {
-            for (const auto &f : e) {
-                file << f.value << endl;
-            }   
+        for (int i = 0; i < gb.boardSize[0]; i++) {
+            for (int j = 0; j < gb.boardSize[0]; j++) {
+                file << gb.board[i][j].value << "\t";
+            }
         }
         file.close();
     }
@@ -61,8 +61,8 @@ void retrieveGame (gameBoard &gb) {
     file >> rowSize >> colSize;
     gb.boardSize[0] = rowSize;
     gb.boardSize[1] = colSize;
-    for (int i; i < rowSize; i++) {
-        for (int j; j < colSize; j++) {
+    for (int i = 0; i < rowSize; i++) {
+        for (int j = 0; j < colSize; j++) {
             file >> gb.board[i][j].value;
         }
     }
