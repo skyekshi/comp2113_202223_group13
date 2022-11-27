@@ -78,7 +78,7 @@ void printMenuAfter () {
     cout << info2;
 	printLeftPadding(info2.size());
 
-    string infomore = "(M)supermerging  (T)moretiles (U)changetarget  (Z)changesize";
+    string infomore = "(M)supermerging  (T)moretiles  (U)changetarget  (Z)changesize";
     printLeftPadding(infomore.size());
     cout << infomore;
 	printLeftPadding(infomore.size());
@@ -126,7 +126,7 @@ void printGamePage (gameBoard gb, int histScore) {
     }
 
     //print command info
-    string info = "Commands: (W)moveup \t(S)movedown \t(A)moveleft \t(D)moveright \t(Q)uit";
+    string info = "Commands: (W)moveup  (S)movedown  (A)moveleft  (D)moveright  (Q)uit";
     printLeftPadding(info.size());
     cout << info << endl;
     

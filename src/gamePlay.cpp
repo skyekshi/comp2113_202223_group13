@@ -77,13 +77,26 @@ int main () {
             if (userInput == 'n') {
                 gb.score = 0;
                 gb.largestTile = 0;
-                gb.tar = 2048;
-                gb.superMove = false;
-                gb.moreTile = false;
+                //gb.tar = 2048;
+                //gb.superMove = false;
+                //gb.moreTile = false;
                 //gb.init = false;
-                gb.boardSize[0] = 4;
-                gb.boardSize[1] = 4;
+                //gb.boardSize[0] = 4;
+                //gb.boardSize[1] = 4;
                 //updateBoard(gb);
+                if (gb.lost == true) {
+                    gb.board.clear();
+                    for (int i = 0; i < gb.boardSize[0]; i++) {
+                        vector<Tile> boardArray;
+                        for (int j = 0; j < gb.boardSize[1]; j++) {
+                            Tile *newtile = new Tile;
+                            newtile->value = 0;
+                            newtile->blocked = false;
+                            boardArray.push_back(*newtile);
+                        }
+                    gb.board.push_back(boardArray);
+                }
+                }
 
                 int i, j, num;
                 i = rand() % gb.boardSize[0];
@@ -130,7 +143,19 @@ int main () {
                 printMessage("Input your desired board size (row, col, 4-6):");
                 int row, col;
                 cin >> row >> col;
-                gb.boardSize = {row, col};
+                gb.boardSize[0] = row;
+                gb.boardSize[1] = col;
+                gb.board.clear();
+                for (int i = 0; i < gb.boardSize[0]; i++) {
+                    vector<Tile> boardArray;
+                    for (int j = 0; j < gb.boardSize[1]; j++) {
+                        Tile *newtile = new Tile;
+                        newtile->value = 0;
+                        newtile->blocked = false;
+                        boardArray.push_back(*newtile);
+                    }
+                    gb.board.push_back(boardArray);
+                }
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 'w' || userInput == 'a' || userInput == 's' || userInput == 'd') {
