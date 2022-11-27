@@ -52,16 +52,16 @@ char getch(void)
 
 int main () {
     printMenu();
-    gameBoard gb;
-    for (int i = 0; i < gb.boardSize[0]; i++) {
+    gameBoard* gb = new gameBoard;
+    for (int i = 0; i < gb->boardSize[0]; i++) {
         vector<Tile> boardArray;
-        for (int j = 0; j < gb.boardSize[1]; j++) {
+        for (int j = 0; j < gb->boardSize[1]; j++) {
             Tile *newtile = new Tile;
             newtile->value = 0;
             newtile->blocked = false;
             boardArray.push_back(*newtile);
         }
-        gb.board.push_back(boardArray);
+        gb->board.push_back(boardArray);
     }
 
 
@@ -75,8 +75,8 @@ int main () {
         tolower(userInput);
         if (count(nextInput.begin(), nextInput.end(), userInput)) {
             if (userInput == 'n') {
-                gb.score = 0;
-                gb.largestTile = 0;
+                gb->score = 0;
+                gb->largestTile = 0;
                 //gb.tar = 2048;
                 //gb.superMove = false;
                 //gb.moreTile = false;
@@ -84,48 +84,48 @@ int main () {
                 //gb.boardSize[0] = 4;
                 //gb.boardSize[1] = 4;
                 //updateBoard(gb);
-                if (gb.lost == true) {
-                    gb.board.clear();
-                    for (int i = 0; i < gb.boardSize[0]; i++) {
+                if (gb->lost == true) {
+                    gb->board.clear();
+                    for (int i = 0; i < gb->boardSize[0]; i++) {
                         vector<Tile> boardArray;
-                        for (int j = 0; j < gb.boardSize[1]; j++) {
+                        for (int j = 0; j < gb->boardSize[1]; j++) {
                             Tile *newtile = new Tile;
                             newtile->value = 0;
                             newtile->blocked = false;
                             boardArray.push_back(*newtile);
                         }
-                    gb.board.push_back(boardArray);
+                    gb->board.push_back(boardArray);
                 }
                 }
 
                 int i, j, num;
-                i = rand() % gb.boardSize[0];
-                j = rand() % gb.boardSize[1];
+                i = rand() % gb->boardSize[0];
+                j = rand() % gb->boardSize[1];
                 num = rand() % 100 > 75 ? 4 : 2;
-                gb.board[i][j].value = num;
-                addTile(gb);
+                gb->board[i][j].value = num;
+                addTile(*gb);
                 
-                printGamePage(gb, highScore);
-                gb.won = false;
-                gb.woncheck = false;
-                gb.lost = false;
+                printGamePage(*gb, highScore);
+                gb->won = false;
+                gb->woncheck = false;
+                gb->lost = false;
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'r') {
-                retrieveGame(gb);
+                retrieveGame(*gb);
                 //gb.init = true;
-                printGamePage(gb, highScore);
+                printGamePage(*gb, highScore);
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'q') {
-                saveScore(gb.score);
-                saveGame(gb);
+                saveScore(gb->score);
+                saveGame(*gb);
                 printMessage("See you next time!");
                 break;
             } else if (userInput == 'm') {
-                gb.superMove = true;
+                gb->superMove = true;
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 't') {
-                gb.moreTile = true;
+                gb->moreTile = true;
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } /*else if (userInput == 'b') {
@@ -136,25 +136,25 @@ int main () {
                 printMessage("Input your desired target value:");
                 int target;
                 cin >> target;
-                gb.tar = target;
+                gb->tar = target;
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 'z') {
                 printMessage("Input your desired board size (row, col, 4-6):");
                 int row, col;
                 cin >> row >> col;
-                gb.boardSize[0] = row;
-                gb.boardSize[1] = col;
-                gb.board.clear();
-                for (int i = 0; i < gb.boardSize[0]; i++) {
+                gb->boardSize[0] = row;
+                gb->boardSize[1] = col;
+                gb->board.clear();
+                for (int i = 0; i < gb->boardSize[0]; i++) {
                     vector<Tile> boardArray;
-                    for (int j = 0; j < gb.boardSize[1]; j++) {
+                    for (int j = 0; j < gb->boardSize[1]; j++) {
                         Tile *newtile = new Tile;
                         newtile->value = 0;
                         newtile->blocked = false;
                         boardArray.push_back(*newtile);
                     }
-                    gb.board.push_back(boardArray);
+                    gb->board.push_back(boardArray);
                 }
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
@@ -162,45 +162,45 @@ int main () {
                 //gb.init = true;
                 switch (userInput) {
                     case 'w':
-                        if (canMove(gb, UP)) {
-                            moveTile(gb, UP);
-                            addTile(gb);
+                        if (canMove(*gb, UP)) {
+                            moveTile(*gb, UP);
+                            addTile(*gb);
                         }
                         break;
                     case 's':
-                        if (canMove(gb, DOWN)) {
-                            moveTile(gb, DOWN);
-                            addTile(gb);
+                        if (canMove(*gb, DOWN)) {
+                            moveTile(*gb, DOWN);
+                            addTile(*gb);
                         }
                         break;
                     case 'a':
-                        if (canMove(gb, LEFT)) {
-                            moveTile(gb, LEFT);
-                            addTile(gb);
+                        if (canMove(*gb, LEFT)) {
+                            moveTile(*gb, LEFT);
+                            addTile(*gb);
                         }
                         break;
                     case 'd':
-                        if (canMove(gb, RIGHT)) {
-                            moveTile(gb, RIGHT);
-                            addTile(gb);
+                        if (canMove(*gb, RIGHT)) {
+                            moveTile(*gb, RIGHT);
+                            addTile(*gb);
                         }
                         break;
                     default:
                         break;
                 }
-                hasWon(gb);
-                hasLost(gb);
-                if (gb.lost) {
+                hasWon(*gb);
+                hasLost(*gb);
+                if (gb->lost) {
                     printMessage("You've lost! You can either (Q)uit game or start (N)ew game.");
                     nextInput = {'q', 'n'};
-                    saveScore(gb.score);
-                } else if (gb.won && !gb.woncheck) {
-                    gb.woncheck = true;
+                    saveScore(gb->score);
+                } else if (gb->won && !gb->woncheck) {
+                    gb->woncheck = true;
                     printMessage("You've won! You can either (Q)uit game or start (N)ew game. Otherwise, press wasd to continue.");
                     nextInput = {'q', 'n', 'w', 'a', 's', 'd'};
-                    saveScore(gb.score);
+                    saveScore(gb->score);
                 } else {
-                    printGamePage(gb, highScore);
+                    printGamePage(*gb, highScore);
                     nextInput = {'q', 'w', 'a', 's', 'd'};
                 }
             }
