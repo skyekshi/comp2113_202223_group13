@@ -231,18 +231,126 @@ void mergeTile (gameBoard &gb, std::vector<int> &vectorToMerge) {
     bool merged = false;
 
     for (int i = vectorToMerge.size() - 1; i > 0; i--) {
-        if (merged) {
-            merged = false;
-            if (!gb.superMove) {
+        if (!gb.superMove) {
+            if (merged) {
+                merged = false;
                 continue;
+            } else if (vectorToMerge[i] == vectorToMerge[i - 1]) {
+                vectorToMerge[i] *= 2;
+                gb.score += vectorToMerge[i - 1];
+                gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                vectorToMerge[i - 1] = 0;
+                merged = true;
             }
-        } else if (vectorToMerge[i] == vectorToMerge[i - 1]) {
-            vectorToMerge[i] *= 2;
-            gb.score += vectorToMerge[i - 1];
-            gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
-            vectorToMerge[i - 1] = 0;
-            merged = true;
-        }
+        } else {
+            int k = i;
+            if (k == 5) {
+                if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2] && vectorToMerge[i] == vectorToMerge[i - 3] && vectorToMerge[i] == vectorToMerge[i - 4] && vectorToMerge[i] == vectorToMerge[i - 5]) {
+                    vectorToMerge[i - 5] *= 6;
+                    gb.score += 5 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i - 2] = 0;
+                    vectorToMerge[i - 3] = 0;
+                    vectorToMerge[i - 4] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2] && vectorToMerge[i] == vectorToMerge[i - 3] && vectorToMerge[i] == vectorToMerge[i - 4]) {
+                    vectorToMerge[i - 5] *= 5;
+                    gb.score += 4 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i - 2] = 0;
+                    vectorToMerge[i - 3] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2] && vectorToMerge[i] == vectorToMerge[i - 3]) {
+                    vectorToMerge[i - 3] *= 4;
+                    gb.score += 3 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i - 2] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2]) {
+                    vectorToMerge[i - 2] *= 3;
+                    gb.score +=  2 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1]) {
+                    vectorToMerge[i - 1] *= 2;
+                    gb.score += vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i] = 0;
+                }
+            } else if (k == 4) {
+                if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2] && vectorToMerge[i] == vectorToMerge[i - 3] && vectorToMerge[i] == vectorToMerge[i - 4]) {
+                    vectorToMerge[i - 5] *= 5;
+                    gb.score += 4 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i - 2] = 0;
+                    vectorToMerge[i - 3] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2] && vectorToMerge[i] == vectorToMerge[i - 3]) {
+                    vectorToMerge[i - 3] *= 4;
+                    gb.score += 3 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i - 2] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2]) {
+                    vectorToMerge[i - 2] *= 3;
+                    gb.score +=  2 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1]) {
+                    vectorToMerge[i - 1] *= 2;
+                    gb.score += vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i] = 0;
+                }
+            } else if (k == 3) {
+                if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2] && vectorToMerge[i] == vectorToMerge[i - 3]) {
+                    vectorToMerge[i - 3] *= 4;
+                    gb.score += 3 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i - 2] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2]) {
+                    vectorToMerge[i - 2] *= 3;
+                    gb.score +=  2 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1]) {
+                    vectorToMerge[i - 1] *= 2;
+                    gb.score += vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i] = 0;
+                }
+            } else if (k == 2) {
+                if (vectorToMerge[i] == vectorToMerge[i - 1] && vectorToMerge[i] == vectorToMerge[i - 2]) {
+                    vectorToMerge[i - 2] *= 3;
+                    gb.score +=  2 * vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i - 1] = 0;
+                    vectorToMerge[i] = 0;
+                } else if (vectorToMerge[i] == vectorToMerge[i - 1]) {
+                    vectorToMerge[i - 1] *= 2;
+                    gb.score += vectorToMerge[i - 1];
+                    gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                    vectorToMerge[i] = 0;
+                }
+            } else if (k == 1) {
+                if (vectorToMerge[i] == vectorToMerge[i - 1]) {
+                vectorToMerge[i - 1] *= 2;
+                gb.score += vectorToMerge[i - 1];
+                gb.largestTile = gb.largestTile > vectorToMerge[i] ? gb.largestTile : vectorToMerge[i];
+                vectorToMerge[i] = 0;
+                }
+            }
+        } 
     }
 
     vectorToMerge.erase(remove(vectorToMerge.begin(), vectorToMerge.end(), 0), vectorToMerge.end());

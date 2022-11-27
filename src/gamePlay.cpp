@@ -11,7 +11,7 @@
 #include "scoreStorage.h"
 using namespace std;
 
-//getch linux equivalent
+//getch linux equivalent, codes from stackoverflow
 static struct termios old, current;
 
 /* Initialize new terminal i/o settings */
@@ -203,7 +203,6 @@ int main () {
                     printGamePage(gb, highScore);
                     nextInput = {'q', 'w', 'a', 's', 'd'};
                 }
-
             }
         }
     }
