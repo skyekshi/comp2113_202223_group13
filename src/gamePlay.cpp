@@ -6,6 +6,7 @@
 #include <vector>
 #include <termios.h>
 #include <stdio.h>
+#include <filesystem>
 #include "boardFunction.h"
 #include "userInterface.h"
 #include "scoreStorage.h"
@@ -111,10 +112,20 @@ int main () {
                 gb->lost = false;
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'r') {
-                retrieveGame(*gb);
-                //gb.init = true;
-                printGamePage(*gb, highScore);
-                nextInput = {'q', 'w', 'a', 's', 'd'};
+                if (std::__fs::filesystem::file_size("boarddata.txt") == 0) {
+                    printMessage("No historial data, please start a (N)ew game.");
+                    nextInput = {'n'};
+                } else {
+                    int row = gb->boardSize[0], col = gb->boardSize[1];
+                    retrieveGame(*gb);
+                    if (row != gb->boardSize[0] || col != gb->boardSize[1]) {
+                        printMessage("Your board size setting is not compatible with your record. Start a (N)ew game.");
+                        nextInput = {'n'};
+                    } else {
+                        printGamePage(*gb, highScore);
+                        nextInput = {'q', 'w', 'a', 's', 'd'};
+                    } 
+                }
             } else if (userInput == 'q') {
                 saveScore(gb->score);
                 saveGame(*gb);
@@ -128,11 +139,11 @@ int main () {
                 gb->moreTile = true;
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
-            } /*else if (userInput == 'b') {
-                blockTile(gb);
+            } else if (userInput == 'b') {
+                blockTile(*gb);
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
-            }*/ else if (userInput == 'u') {
+            } else if (userInput == 'u') {
                 printMessage("Input your desired target value:");
                 int target;
                 cin >> target;
