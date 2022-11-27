@@ -6,16 +6,20 @@
 #include <vector>
 #include <termios.h>
 #include <stdio.h>
-#include <filesystem>
+#include <fstream>
 #include "boardFunction.h"
 #include "userInterface.h"
 #include "scoreStorage.h"
 using namespace std;
 
-//getch linux equivalent, codes from stackoverflow
+/*
+getch linux equivalent, codes from stackoverflow
+*/
 static struct termios old, current;
 
-/* Initialize new terminal i/o settings */
+/* 
+Initialize new terminal i/o settings 
+*/
 void initTermios(int echo) 
 {
   tcgetattr(0, &old); /* grab old terminal i/o settings */
@@ -29,13 +33,17 @@ void initTermios(int echo)
   tcsetattr(0, TCSANOW, &current); /* use these new terminal i/o settings now */
 }
 
-/* Restore old terminal i/o settings */
+/* 
+Restore old terminal i/o settings
+*/
 void resetTermios(void) 
 {
   tcsetattr(0, TCSANOW, &old);
 }
 
-/* Read 1 character - echo defines echo mode */
+/* 
+Read 1 character - echo defines echo mode 
+*/
 char getch_(int echo) 
 {
   char ch;
@@ -45,12 +53,19 @@ char getch_(int echo)
   return ch;
 }
 
-/* Read 1 character without echo */
+/* 
+Read 1 character without echo 
+*/
 char getch(void) 
 {
   return getch_(0);
 }
 
+/*
+Initialize game and print respective page
+Input: user input from keyboard
+Output: print game status
+*/
 int main () {
     printMenu();
     gameBoard* gb = new gameBoard;
@@ -75,16 +90,13 @@ int main () {
         userInput = getch();
         tolower(userInput);
         if (count(nextInput.begin(), nextInput.end(), userInput)) {
+            /*
+            Start new game
+            */
             if (userInput == 'n') {
                 gb->score = 0;
                 gb->largestTile = 0;
-                //gb.tar = 2048;
-                //gb.superMove = false;
-                //gb.moreTile = false;
-                //gb.init = false;
-                //gb.boardSize[0] = 4;
-                //gb.boardSize[1] = 4;
-                //updateBoard(gb);
+
                 if (gb->lost == true) {
                     gb->board.clear();
                     for (int i = 0; i < gb->boardSize[0]; i++) {
@@ -112,7 +124,11 @@ int main () {
                 gb->lost = false;
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'r') {
-                if (std::__fs::filesystem::file_size("boarddata.txt") == 0) {
+                /*
+                Resume a game, only when there are past records
+                */
+                std::ifstream fin("boarddata.txt");		
+                if (fin.peek() == std::ifstream::traits_type::eof()) {
                     printMessage("No historial data, please start a (N)ew game.");
                     nextInput = {'n'};
                 } else {
@@ -127,23 +143,38 @@ int main () {
                     } 
                 }
             } else if (userInput == 'q') {
+                /*
+                Quit the game and save game data
+                */
                 saveScore(gb->score);
                 saveGame(*gb);
                 printMessage("See you next time!");
                 break;
             } else if (userInput == 'm') {
+                /*
+                Enable supermerging
+                */
                 gb->superMove = true;
                 printMenuAfter();
-                nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
+                nextInput = {'n', 'r', 'q', 't', 'b', 'u', 'z'};
             } else if (userInput == 't') {
+                /*
+                Enable extra tile possibilities
+                */
                 gb->moreTile = true;
                 printMenuAfter();
-                nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
+                nextInput = {'n', 'r', 'q', 'm', 'b', 'u', 'z'};
             } else if (userInput == 'b') {
+                /*
+                Block a tile
+                */
                 blockTile(*gb);
                 printMenuAfter();
-                nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
+                nextInput = {'n', 'r', 'q', 'm', 't', 'u', 'z'};
             } else if (userInput == 'u') {
+                /*
+                Change the target
+                */
                 printMessage("Input your desired target value:");
                 int target;
                 cin >> target;
@@ -151,6 +182,9 @@ int main () {
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 'z') {
+                /*
+                Change the board size
+                */
                 printMessage("Input your desired board size (row, col, 4-6):");
                 int row, col;
                 cin >> row >> col;
@@ -170,7 +204,9 @@ int main () {
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 'w' || userInput == 'a' || userInput == 's' || userInput == 'd') {
-                //gb.init = true;
+                /*
+                Play the game
+                */
                 switch (userInput) {
                     case 'w':
                         if (canMove(*gb, UP)) {

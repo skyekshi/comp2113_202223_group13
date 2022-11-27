@@ -16,6 +16,6 @@ gamePlay.o: gamePlay.cpp userInterface.h scoreStorage.h boardFunction.h
 	g++ $(FLAGS) $^ -o $@
 
 clean:
-	rm -f gamePlay.o userInterface.o scoreStorage.o boardFunction.o 2048.o 2048
+	rm -f gamePlay.o userInterface.o scoreStorage.o boardFunction.o 2048.o 2048 boarddata.txt score.txt
 
 .PHONY: clean

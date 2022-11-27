@@ -12,6 +12,11 @@
 #include "scoreStorage.h"
 using namespace std;
 
+/*
+Get the terminal shape
+Input: computer setting
+Output: terminal size
+*/
 vector<int> getLinuxShape () {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -19,16 +24,31 @@ vector<int> getLinuxShape () {
     return sizePair;
 }
 
+/*
+Print the left padding to do horizontal centering
+Input: message length
+Output: print proper spaces
+*/
 void printLeftPadding (int width) {
     vector<int> sizePair = getLinuxShape();
     for(int i = 0; i < (sizePair[0]/2) - width/2; i++) cout << " ";
 }
 
+/*
+Print the up padding to do vertical centering
+Input: message length
+Output: print proper spaces
+*/
 void printUpPadding (int height) {
     vector<int> sizePair = getLinuxShape();
     for(int i = 0; i < (sizePair[1]/2) - height/2; i++) cout << endl;
 }
 
+/*
+Print the start menu
+Input: none
+Output: welcome message and commands choice centered on the terminal window
+*/
 void printMenu () {
     system("clear");
    
@@ -45,7 +65,7 @@ void printMenu () {
     cout << info2;
 	printLeftPadding(info2.size());
 
-    string infomore = "(M)supermerging  (T)moretiles (U)changetarget  (Z)changesize ";
+    string infomore = "(B)locktile (M)supermerging (T)moretiles (U)changetarget (Z)changesize";
     printLeftPadding(infomore.size());
     cout << infomore;
 	printLeftPadding(infomore.size());
@@ -54,6 +74,11 @@ void printMenu () {
 
 }
 
+/*
+Print a message
+Input: message to print
+Output: message centered on the terminal window
+*/
 void printMessage (string msg) {
     system("clear");
     printUpPadding(2);
@@ -62,6 +87,11 @@ void printMessage (string msg) {
 	printUpPadding(2);
 }
 
+/*
+Print the menu after changing settings
+Input: none
+Output: successful message and commands choice centered on the terminal window
+*/
 void printMenuAfter () {
     system("clear");
    
@@ -78,7 +108,7 @@ void printMenuAfter () {
     cout << info2;
 	printLeftPadding(info2.size());
 
-    string infomore = "(M)supermerging  (T)moretiles  (U)changetarget  (Z)changesize";
+    string infomore = "(B)locktile (M)supermerging (T)moretiles (U)changetarget (Z)changesize";
     printLeftPadding(infomore.size());
     cout << infomore;
 	printLeftPadding(infomore.size());
@@ -87,6 +117,11 @@ void printMenuAfter () {
 
 }
 
+/*
+Print the main game page
+Input: gameboard, highest historical score
+Output: the grid game page centered on the terminal window
+*/
 void printGamePage (gameBoard gb, int histScore) {
     system("clear");
     

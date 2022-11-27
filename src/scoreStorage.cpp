@@ -4,7 +4,11 @@
 #include "scoreStorage.h"
 using namespace std;
 
-
+/*
+Save the current score to a text file
+Input: current score
+Output: append the integer to the text file
+*/
 void saveScore(int score)
 {
     ofstream file;
@@ -19,6 +23,11 @@ void saveScore(int score)
     }
 }
 
+/*
+Retrieve the highest historical score
+Input: reading the text file
+Output: return the highest historical score (int)
+*/
 int retrieveScore () {
     ifstream file;
     file.open("score.txt");
@@ -33,6 +42,11 @@ int retrieveScore () {
     return highest_score;
 }
 
+/*
+Save the current game statistics to a text file
+Input: current gameboard
+Output: rewrite the text file
+*/
 void saveGame (gameBoard gb) {
     ofstream file;
     file.open("boarddata.txt");
@@ -52,6 +66,11 @@ void saveGame (gameBoard gb) {
     }
 }
 
+/*
+Retrieve the latest game status
+Input: reading the text file
+Output: update the gameboard settings to the last time
+*/
 void retrieveGame (gameBoard &gb) {
     ifstream file;
     file.open("boarddata.txt");
