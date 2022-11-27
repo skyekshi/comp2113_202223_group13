@@ -53,6 +53,18 @@ char getch(void)
 int main () {
     printMenu();
     gameBoard gb;
+    for (int i = 0; i < gb.boardSize[0]; i++) {
+        vector<Tile> boardArray;
+        for (int j = 0; j < gb.boardSize[1]; j++) {
+            Tile *newtile = new Tile;
+            newtile->value = 0;
+            newtile->blocked = false;
+            boardArray.push_back(*newtile);
+        }
+        gb.board.push_back(boardArray);
+    }
+
+
     int highScore = retrieveScore();
 
     char userInput;
@@ -68,20 +80,10 @@ int main () {
                 gb.tar = 2048;
                 gb.superMove = false;
                 gb.moreTile = false;
-                gb.init = false;
+                //gb.init = false;
                 gb.boardSize[0] = 4;
                 gb.boardSize[1] = 4;
                 //updateBoard(gb);
-                for (int i = 0; i < gb.boardSize[0]; i++) {
-                    vector<Tile> boardArray;
-                    for (int j = 0; j < gb.boardSize[1]; j++) {
-                        Tile *newtile = new Tile;
-                        newtile->value = 0;
-                        newtile->blocked = false;
-                        boardArray.push_back(*newtile);
-                    }
-                    gb.board.push_back(boardArray);
-                }
 
                 int i, j, num;
                 i = rand() % gb.boardSize[0];
@@ -97,7 +99,7 @@ int main () {
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'r') {
                 retrieveGame(gb);
-                gb.init = true;
+                //gb.init = true;
                 printGamePage(gb, highScore);
                 nextInput = {'q', 'w', 'a', 's', 'd'};
             } else if (userInput == 'q') {
@@ -132,7 +134,7 @@ int main () {
                 printMenuAfter();
                 nextInput = {'n', 'r', 'q', 'm', 't', 'b', 'u', 'z'};
             } else if (userInput == 'w' || userInput == 'a' || userInput == 's' || userInput == 'd') {
-                gb.init = true;
+                //gb.init = true;
                 switch (userInput) {
                     case 'w':
                         if (canMove(gb, UP)) {

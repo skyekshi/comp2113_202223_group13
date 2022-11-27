@@ -24,13 +24,13 @@ class gameBoard {
         int tar;
         bool superMove;
         bool moreTile;
-        bool init;
+        //bool init;
         bool won;
         bool woncheck;
         bool lost;
         std::vector<int> boardSize;
         std::vector<std::vector<Tile> > board;
-        gameBoard(): score(0), largestTile(2), tar(2048), superMove(false), moreTile(false), init(false), boardSize({4,4}), board({}), won(false), woncheck(false), lost(false) {}
+        gameBoard(): score(0), largestTile(2), tar(2048), superMove(false), moreTile(false), boardSize({4,4}), board({}), won(false), woncheck(false), lost(false) {}
 };
 
 void addTile(gameBoard &gb);
