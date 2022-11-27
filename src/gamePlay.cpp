@@ -206,6 +206,7 @@ int main () {
             }
         }
     }
+    delete gb;
     return 0;
 }
 
